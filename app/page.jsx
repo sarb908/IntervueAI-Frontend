@@ -5,7 +5,6 @@ import Features from "./_components/Features";
 export default function Home() {
   return (
     <div>
-    <Navigation />
     <Banner />
     <Features />
     </div>

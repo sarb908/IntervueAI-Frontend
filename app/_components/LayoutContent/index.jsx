@@ -6,7 +6,7 @@ import Navbar from "./../Navigation";
 export default function LayoutContent({ children }) {
   const pathname = usePathname();
 
-  const hideNavbarRoutes = ["/signup", "/login"];
+  const hideNavbarRoutes = [];
 
   const shouldHideNavbar = hideNavbarRoutes.includes(pathname);
 
