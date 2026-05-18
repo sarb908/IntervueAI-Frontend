@@ -1,6 +1,4 @@
-import React from 'react'
-
-import React from "react";
+"use client"
 import { UserPlus, Play, BarChart, RefreshCw, ArrowRight } from "lucide-react";
 
 const HowItWorks = () => {
