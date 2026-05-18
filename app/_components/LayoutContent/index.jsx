@@ -13,7 +13,7 @@ export default function LayoutContent({ children }) {
   return (
     <>
       {!shouldHideNavbar && <Navbar />}
-      <main>{children}</main>
+      <div>{children}</div>
     </>
   );
 }
