@@ -5,9 +5,9 @@ import React, { useState } from 'react'
 import { Menu, X } from "lucide-react";
 
 
+
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -29,12 +29,6 @@ const Navigation = () => {
 
             {/* Desktop Left Navigation */}
             <div className="hidden md:flex items-center space-x-6">
-              <Link
-                href="/"
-                className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium"
-              >
-                Home
-              </Link>
               <Link
                 href="/pricing"
                 className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium"
@@ -76,13 +70,6 @@ const Navigation = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
           <div className="px-4 py-2 space-y-1">
-            <Link
-              href="/"
-              className="block px-3 py-3 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors rounded-lg"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Home
-            </Link>
             <Link
               href="/pricing"
               className="block px-3 py-3 text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors rounded-lg"
