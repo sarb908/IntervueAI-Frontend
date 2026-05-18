@@ -4,6 +4,7 @@ import Banner from "./_components/Banner";
 import Features from "./_components/Features";
 import HowItWorks from "./_components/HowItWorks";
 import Pricing from "./_components/Pricing";
+import FAQs from "./_components/FAQs";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
     <Features />
     <HowItWorks />
     <Pricing />
+    <FAQs/>
     </div>
   );
 }

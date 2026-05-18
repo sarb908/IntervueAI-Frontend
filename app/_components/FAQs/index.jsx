@@ -37,7 +37,7 @@ const FAQItem = ({ faq, isOpen, onToggle }) => {
         onClick={onToggle}
         className="w-full flex items-center justify-between px-8 py-6 text-left hover:bg-gray-50 transition-colors duration-200"
       >
-        <h3 className="text-2xl font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-gray-900">
           {faq.question}
         </h3>
 
