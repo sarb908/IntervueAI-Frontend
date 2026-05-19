@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from "next/navigation";
 
 const Signup = () => {
-  const navigate  = useRouter();
+  const router  = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -51,7 +51,7 @@ console.log("FIREBASE_API_KEY:", process.env); // Debugging line to check if the
         // Signup successful
         console.log("Signup successful:", result);
         // Navigate to login page
-        navigate("/login");
+        router.push("/login");
       } else {
         // Handle error
         setError(result.error?.message || "Signup failed. Please try again.");
