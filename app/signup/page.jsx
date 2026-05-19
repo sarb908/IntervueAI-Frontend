@@ -1,9 +1,72 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
+  const navigate  = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error when user starts typing
+    if (error) setError("");
+  };
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+
+console.log("Firebase API Key:", apiKey);
+console.log("FIREBASE_API_KEY:", process.env); // Debugging line to check if the API key is loaded
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Signup successful
+        console.log("Signup successful:", result);
+        // Navigate to login page
+        navigate("/login");
+      } else {
+        // Handle error
+        setError(result.error?.message || "Signup failed. Please try again.");
+        console.error("Signup error:", result);
+      }
+    } catch (error) {
+      setError("Network error. Please check your connection and try again.");
+      console.error("Network error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }; 
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 flex items-center justify-center px-4 py-8 sm:py-12 overflow-x-hidden">
+ <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 flex items-center justify-center px-4 py-8 sm:py-12 overflow-x-hidden">
       <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
         {/* Left Section - Marketing */}
         <div className="flex-1 space-y-6 sm:space-y-8 text-center lg:text-left lg:pr-8">
@@ -39,7 +102,14 @@ const Signup = () => {
         {/* Right Section - Signup Form */}
         <div className="w-full max-w-md mx-auto lg:max-w-sm flex-shrink-0">
           <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100">
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-red-600 text-sm">{error}</p>
+                </div>
+              )}
+
               {/* Email Input */}
               <div>
                 <label
@@ -52,8 +122,12 @@ const Signup = () => {
                   type="email"
                   id="email"
                   name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-sm sm:text-base"
                   placeholder="Enter your email"
+                  required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -69,17 +143,29 @@ const Signup = () => {
                   type="password"
                   id="password"
                   name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-sm sm:text-base"
                   placeholder="Create a password"
+                  required
+                  disabled={isLoading}
                 />
               </div>
 
               {/* Sign Up Button */}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2.5 sm:py-3 rounded-lg font-semibold text-base sm:text-lg transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2.5 sm:py-3 rounded-lg font-semibold text-base sm:text-lg transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                Sign up
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Creating Account...
+                  </div>
+                ) : (
+                  "Sign up"
+                )}
               </button>
             </form>
 
