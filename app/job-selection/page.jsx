@@ -9,12 +9,14 @@ import {
   Briefcase,
   Clock,
 } from "lucide-react";
+import { useRouter } from 'next/navigation';
 
 const JobSelection = () => {
   const [formData, setFormData] = useState({
     role: "",
     experience: "",
   });
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const experienceOptions = [
@@ -69,15 +71,11 @@ const JobSelection = () => {
 
       const sessionResponse = await response.json();
 
-      // Navigate to interview with session data
-      navigate("/interview-session", {
-        state: {
-          type: "job",
-          sessionData: sessionResponse,
-          jobRole: formData.role,
-          experience: formData.experience,
-        },
-      });
+    // 1. Save the payload to sessionStorage as a string
+    sessionStorage.setItem("interview_session", JSON.stringify(sessionResponse));
+
+    // 2. Navigate to the page
+      router.push("/interview-session");
     } catch (error) {
       console.error("Error starting job interview:", error);
       alert("Failed to start interview. Please try again.");
@@ -85,6 +83,8 @@ const JobSelection = () => {
       setIsLoading(false);
     }
   };
+      
+  
 
 
   return (
