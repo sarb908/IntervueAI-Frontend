@@ -41,8 +41,8 @@ const Navigation = () => {
 
   const leftNavItems = [
     { name: "Home", href: "/", isRoute: true },
-    { name: "Pricing", href: "/pricing", isRoute: true },
-    { name: "AI Interview", href: "/interview", isRoute: true },
+    { name: "Pricing", href: "/#pricing", isRoute: true },
+    { name: "AI Interview", href: "/ai-interview", isRoute: true },
   ];
 
   const handleNavClick = (item) => {
