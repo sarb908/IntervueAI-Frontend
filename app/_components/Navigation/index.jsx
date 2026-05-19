@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Menu, X, ChevronRight, LogOut, User } from "lucide-react";
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 
 
@@ -12,6 +12,7 @@ const Navigation = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userDisplayName, setUserDisplayName] = useState("");
   const router = useRouter();
+  const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -41,14 +42,53 @@ const Navigation = () => {
 
   const leftNavItems = [
     { name: "Home", href: "/", isRoute: true },
-    { name: "Pricing", href: "/#pricing", isRoute: true },
+    { name: "Pricing", href: "/#pricing", isRoute: false },
     { name: "AI Interview", href: "/ai-interview", isRoute: true },
   ];
 
   const handleNavClick = (item) => {
     if (item.isRoute) {
+    // Standard page-to-page routing
+    router.push(item.href);
+  } else {
+    // Handling a hash/section link (e.g., "/#pricing")
+    // pathname is not defined
+
+    if (pathname === "/") {
+      // SCENARIO 1: User is ALREADY on the homepage.
+      // Extract the ID (e.g., "#pricing") from "/#pricing"
+      const targetId = item.href.replace("/", ""); 
+      const element = document.querySelector(targetId);
+      
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        // Update URL hash without causing a page jump or double hash bug
+        window.history.pushState(null, "", item.href);
+      }
+    } else {
+      // SCENARIO 2: User is on another page (like "/ai-interview").
+      // Just push the path with the hash. Next.js App Router and the browser 
+      // will load the homepage and automatically scroll to the element for you.
+      router.push(item.href);
+    }
+  }
+  setIsOpen(false);
+  };
+
+  const handleMobileNavClick = (item) => {
+    if (item.isRoute) {
       router.push(item.href);
     } else {
+       // we need to scroll to the section with id matching item.href after navigating to the home page
+      router.push("/").then(() => {
+        const element = document.querySelector(item.href);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+      // const element = document.querySelector(item.href);
+      // if (element) {
+      //                                                            
       const element = document.querySelector(item.href);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
