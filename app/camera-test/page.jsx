@@ -1,7 +1,10 @@
-import React from "react";
-
+"use client"
+import React, { useState } from "react";
+import Webcam from "react-webcam";
 
 const CameraTest = () => {
+
+  const [isCameraTesting, setIsCameraTesting] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex flex-col justify-center items-center py-12 px-4">
@@ -46,20 +49,45 @@ const CameraTest = () => {
 
                   <div className="space-y-4">
                     <div className="w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-300">
-                      <div className="text-center">
-                        <div className="text-6xl text-gray-400 mb-2">📷</div>
-                        <p className="text-gray-500 font-medium">
-                          Camera Preview
-                        </p>
-                      </div>
+                      {isCameraTesting ? (
+                        <Webcam
+                          audio={false}
+                          mirrored={true}
+                          className="w-full h-full object-cover"
+                          onUserMediaError={(error) => {
+                            console.error("Camera error:", error);
+                            alert(
+                              "Camera access denied. Please allow camera permission."
+                            );
+                            setIsCameraTesting(false);
+                          }}
+                        />
+                      ) : (
+                        <div className="text-center">
+                          <div className="text-6xl text-gray-400 mb-2">📷</div>
+                          <p className="text-gray-500 font-medium">
+                            Camera Preview
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    <button
-                      disabled
-                      className="bg-gray-400 text-white px-6 py-3 rounded-xl font-semibold cursor-not-allowed flex items-center gap-2 mx-auto opacity-60"
-                    >
-                      <span className="text-xl">🎥</span>
-                      Test My Camera
-                    </button>
+                    {isCameraTesting ? (
+                      <button
+                        onClick={() => setIsCameraTesting(false)}
+                        className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg flex items-center gap-2 mx-auto"
+                      >
+                        <span className="text-xl">⏹️</span>
+                        Stop Camera
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setIsCameraTesting(true)}
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg flex items-center gap-2 mx-auto"
+                      >
+                        <span className="text-xl">🎥</span>
+                        Test My Camera
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
