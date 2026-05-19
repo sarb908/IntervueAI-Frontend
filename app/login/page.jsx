@@ -53,8 +53,7 @@ const Login = () => {
           result.displayName || result.email.split("@")[0]
         );
         // Navigate to dashboard or home
-        router.push("/");
-        // Refresh the page to update navbar
+        window.location.href = "/";
       } else {
         setError(
           result.error?.message ||
