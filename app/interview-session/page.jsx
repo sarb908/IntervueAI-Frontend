@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 const page = () => {
 
   const [sessionData, setSessionData] = useState(null);
+  
 console.log("Session Data:", sessionData); // Debugging line to check if session data is being set correctly
   useEffect(() => {
     // Retrieve data from sessionStorage when the page mounts
@@ -11,9 +12,9 @@ console.log("Session Data:", sessionData); // Debugging line to check if session
     if (savedData) {
       setSessionData(JSON.parse(savedData));
       
-      // Optional: Clean it up immediately so it behaves exactly like React Router's state 
-      // (it won't persist if they refresh this page manually)
-      sessionStorage.removeItem("interview_session");
+    //   // Optional: Clean it up immediately so it behaves exactly like React Router's state 
+    //   // (it won't persist if they refresh this page manually)
+    //   sessionStorage.removeItem("interview_session");
     }
   }, []);
 

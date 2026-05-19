@@ -72,7 +72,7 @@ const JobSelection = () => {
       const sessionResponse = await response.json();
 
     // 1. Save the payload to sessionStorage as a string
-    sessionStorage.setItem("interview_session", JSON.stringify(sessionResponse));
+    localStorage.setItem("interview_session", JSON.stringify(sessionResponse));
 
     // 2. Navigate to the page
       router.push("/interview-session");
