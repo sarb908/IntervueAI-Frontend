@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import {
   Brain,
   Target,
@@ -10,6 +11,12 @@ import {
 } from "lucide-react";
 
 const JobSelection = () => {
+  const [formData, setFormData] = useState({
+    role: "",
+    experience: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
   const experienceOptions = [
     { value: "0-1", label: "0-1 years", color: "from-green-400 to-green-600" },
     { value: "1-2", label: "1-2 years", color: "from-blue-400 to-blue-600" },
@@ -31,6 +38,54 @@ const JobSelection = () => {
       color: "from-indigo-400 to-indigo-600",
     },
   ];
+    const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Create session with backend
+      const response = await fetch("http://localhost:8000/sessions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          job_role: formData.role,
+          experience: parseInt(formData.experience.split("-")[0]) || 0,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const sessionResponse = await response.json();
+
+      // Navigate to interview with session data
+      navigate("/interview-session", {
+        state: {
+          type: "job",
+          sessionData: sessionResponse,
+          jobRole: formData.role,
+          experience: formData.experience,
+        },
+      });
+    } catch (error) {
+      console.error("Error starting job interview:", error);
+      alert("Failed to start interview. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-8 sm:py-12 lg:py-16">
@@ -167,7 +222,7 @@ const JobSelection = () => {
                   </p>
                 </div>
 
-                <form className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
                   {/* Role Input */}
                   <div className="space-y-4">
                     <label
@@ -182,6 +237,10 @@ const JobSelection = () => {
                         type="text"
                         id="role"
                         name="role"
+                        value={formData.role}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isLoading}
                         className="w-full px-6 py-4 bg-white/80 backdrop-blur-sm border-2 border-gray-200/50 rounded-xl focus:ring-4 focus:ring-blue-100/50 focus:border-blue-500 transition-all duration-300 text-lg shadow-inner placeholder-gray-400"
                         placeholder="e.g., Senior Software Engineer, Product Manager, UX Designer"
                       />
@@ -200,7 +259,17 @@ const JobSelection = () => {
                         <button
                           key={option.value}
                           type="button"
-                          className="relative p-4 rounded-xl border-2 border-gray-200/50 hover:border-blue-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-blue-50 hover:shadow-lg hover:scale-105 transition-all duration-300 text-center group"
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              experience: option.value,
+                            }))
+                          }
+                        className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-center group ${
+                            formData.experience === option.value
+                              ? "border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 text-blue-700 shadow-xl transform scale-105"
+                              : "border-gray-200/50 hover:border-blue-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-blue-50 hover:shadow-lg hover:scale-105"
+                          }`}
                         >
                           {/* Background gradient overlay */}
                           <div
@@ -224,15 +293,29 @@ const JobSelection = () => {
                   <div className="pt-4">
                     <button
                       type="submit"
+                       disabled={
+                        isLoading || !formData.role || !formData.experience
+                      }
                       className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white py-5 rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 hover:scale-[1.02] flex items-center justify-center gap-4 relative overflow-hidden group"
                     >
-                      {/* Button glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-
-                      <Brain className="w-6 h-6 relative z-10 group-hover:animate-bounce" />
-                      <span className="relative z-10">Start AI Interview</span>
-                      <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-                    </button>
+                        {isLoading ? (
+                        <>
+                          <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin relative z-10"></div>
+                          <span className="relative z-10">
+                            Preparing Your Interview...
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="w-6 h-6 relative z-10 group-hover:animate-bounce" />
+                          <span className="relative z-10">
+                            Start AI Interview
+                          </span>
+                          <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
+                        </>
+                      )}
+   
+   </button>
                   </div>
                 </form>
               </div>
