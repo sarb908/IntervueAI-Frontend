@@ -54,7 +54,7 @@ const JobSelection = () => {
 
     try {
       // Create session with backend
-      const response = await fetch("http://localhost:8000/sessions", {
+      const response = await fetch("http://localhost:8080/sessions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,10 +72,10 @@ const JobSelection = () => {
       const sessionResponse = await response.json();
 
     // 1. Save the payload to sessionStorage as a string
-    sessionStorage.setItem("interview_session", JSON.stringify(sessionResponse));
+    localStorage.setItem("interview_session", JSON.stringify(sessionResponse));
 
     // 2. Navigate to the page
-      router.push("/interview-session");
+      router.push("/questions-page");
     } catch (error) {
       console.error("Error starting job interview:", error);
       alert("Failed to start interview. Please try again.");

@@ -1,10 +1,31 @@
 "use client"
 import React, { useState } from "react";
 import Webcam from "react-webcam";
+import  useMicrophoneTest from "./useMicrophoneTest";
 
 const CameraTest = () => {
+  const  {
+    // State
+    isMicTesting,
+    audioLevel,
+    error,
+    permissionState,
+
+    // Derived values
+    audioLevelRounded,
+    hasError,
+    isPermissionGranted,
+    isPermissionDenied,
+
+    // Actions
+    startMicTest,
+    stopMicTest,
+    toggleMicTest,
+
+  } = useMicrophoneTest();  
 
   const [isCameraTesting, setIsCameraTesting] = useState(false);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex flex-col justify-center items-center py-12 px-4">
@@ -103,20 +124,38 @@ const CameraTest = () => {
 
                   <div className="space-y-4">
                     <div className="w-full h-48 bg-gray-100 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-300">
-                      <div className="text-center">
-                        <div className="text-4xl text-gray-400 mb-2">🎤</div>
+                   { isMicTesting ?
+                   <>     
+                   <div
+                      className="h-4 bg-green-500 rounded transition-all "
+                      style={{ width: `${Math.min(audioLevel, 100)}%` }}  
+                      ></div>
+                      </>:
+                            <>
+                      <div className="text-4xl text-gray-400 mb-2">🎤</div>
                         <p className="text-gray-500 font-medium">
                           Audio Level Monitor
                         </p>
-                      </div>
+                      </> }
                     </div>
+                 { isMicTesting ?  
                     <button
-                      disabled
-                      className="bg-gray-400 text-white px-6 py-3 rounded-xl font-semibold cursor-not-allowed flex items-center gap-2 mx-auto opacity-60"
+                      onClick={() => stopMicTest()}
+                      className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg flex items-center gap-2 mx-auto"
+                      >
+                      <span className="text-xl">🎤</span>
+                      Stop Testing
+                    </button> 
+                    :     
+                    <button
+                      onClick={() => startMicTest()}
+                      className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg flex items-center gap-2 mx-auto"
                     >
                       <span className="text-xl">🎤</span>
                       Test My Microphone
                     </button>
+                    
+                    }
                   </div>
                 </div>
               </div>{" "}
