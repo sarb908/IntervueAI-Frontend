@@ -34,7 +34,7 @@ const FinalReport = () => {
         setIsLoading(false);
         return;
       }
-console.log(sessionid, "sessionid")
+     // console.log(sessionid, "sessionid")
       try {
         const response = await fetch(
           `http://localhost:8080/sessions/${sessionid}/final_report`,
@@ -141,7 +141,7 @@ console.log(sessionid, "sessionid")
             </span>
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Congratulations {candidateName}! Here's your detailed performance
+            Congratulations! Here's your detailed performance
             report.
           </p>
         </div>
@@ -160,59 +160,6 @@ console.log(sessionid, "sessionid")
                 </h3>
               </div>
 
-              <div className="space-y-4">
-                {/* Candidate Name */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
-                  <div className="flex items-center gap-3 mb-2">
-                    <User className="w-5 h-5 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-600">
-                      Candidate
-                    </span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900 pl-8">
-                    {candidateName}
-                  </p>
-                </div>
-
-                {/* Job Role */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Target className="w-5 h-5 text-blue-600" />
-                    <span className="text-sm font-semibold text-gray-600">
-                      Job Role
-                    </span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900 pl-8">
-                    {reportData.job_role}
-                  </p>
-                </div>
-
-                {/* Experience Level */}
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100">
-                  <div className="flex items-center gap-3 mb-2">
-                    <TrendingUp className="w-5 h-5 text-purple-600" />
-                    <span className="text-sm font-semibold text-gray-600">
-                      Experience Level
-                    </span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900 pl-8">
-                    {reportData.experience} years
-                  </p>
-                </div>
-
-                {/* Questions Completed */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
-                  <div className="flex items-center gap-3 mb-2">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-600">
-                      Questions Answered
-                    </span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900 pl-8">
-                    5 / 5 Completed
-                  </p>
-                </div>
-              </div>
 
               {/* Action Buttons */}
               <div className="mt-8 space-y-3">

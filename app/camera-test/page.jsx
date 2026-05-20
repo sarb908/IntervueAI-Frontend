@@ -1,7 +1,6 @@
 "use client"
-import React, { use, useEffect, useState } from "react";
+import React, { useState } from "react";
 import Webcam from "react-webcam";
-import dynamic from "next/dynamic";
 import  useMicrophoneTest from "./useMicrophoneTest";
 
 const CameraTest = () => {
@@ -23,15 +22,10 @@ const CameraTest = () => {
     stopMicTest,
     toggleMicTest,
 
-
-  }       = useMicrophoneTest();  
-
-console.log(audioLevel)
-
+  } = useMicrophoneTest();  
 
   const [isCameraTesting, setIsCameraTesting] = useState(false);
-  // const [isMicTesting, setIsMicTesting] = useState(false);
-  // const [audioLevel, setAudioLevel] = useState(50);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex flex-col justify-center items-center py-12 px-4">
