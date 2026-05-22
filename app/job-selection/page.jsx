@@ -10,6 +10,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import ProtectedRoute from "../_components/ProtectedRoute";
 
 const JobSelection = () => {
   const [formData, setFormData] = useState({
@@ -40,24 +41,25 @@ const JobSelection = () => {
       color: "from-indigo-400 to-indigo-600",
     },
   ];
-    const handleInputChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    };
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
       // Create session with backend
       const response = await fetch("http://localhost:8080/sessions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           job_role: formData.role,
@@ -71,11 +73,11 @@ const JobSelection = () => {
 
       const sessionResponse = await response.json();
 
-    // 1. Save the payload to sessionStorage as a string
-    localStorage.setItem("interview_session", JSON.stringify(sessionResponse));
+      // 1. Save the payload to sessionStorage as a string
+      localStorage.setItem("interview_session", JSON.stringify(sessionResponse));
 
-    // 2. Navigate to the page
-      router.push("/questions-page");
+      // 2. Navigate to the page
+      router.push("/camera-test");
     } catch (error) {
       console.error("Error starting job interview:", error);
       alert("Failed to start interview. Please try again.");
@@ -83,12 +85,13 @@ const JobSelection = () => {
       setIsLoading(false);
     }
   };
-      
-  
+
+
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-8 sm:py-12 lg:py-16">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-8 sm:py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -265,11 +268,10 @@ const JobSelection = () => {
                               experience: option.value,
                             }))
                           }
-                        className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-center group ${
-                            formData.experience === option.value
+                          className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-center group ${formData.experience === option.value
                               ? "border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 text-blue-700 shadow-xl transform scale-105"
                               : "border-gray-200/50 hover:border-blue-300 hover:bg-gradient-to-br hover:from-gray-50 hover:to-blue-50 hover:shadow-lg hover:scale-105"
-                          }`}
+                            }`}
                         >
                           {/* Background gradient overlay */}
                           <div
@@ -293,12 +295,12 @@ const JobSelection = () => {
                   <div className="pt-4">
                     <button
                       type="submit"
-                       disabled={
+                      disabled={
                         isLoading || !formData.role || !formData.experience
                       }
                       className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white py-5 rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 hover:scale-[1.02] flex items-center justify-center gap-4 relative overflow-hidden group"
                     >
-                        {isLoading ? (
+                      {isLoading ? (
                         <>
                           <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin relative z-10"></div>
                           <span className="relative z-10">
@@ -314,8 +316,8 @@ const JobSelection = () => {
                           <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
                         </>
                       )}
-   
-   </button>
+
+                    </button>
                   </div>
                 </form>
               </div>
@@ -324,6 +326,7 @@ const JobSelection = () => {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

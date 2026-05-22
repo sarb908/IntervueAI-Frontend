@@ -1,7 +1,9 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import  useMicrophoneTest from "./useMicrophoneTest";
+import { useRouter } from "next/navigation";
+import ProtectedRoute from "../_components/ProtectedRoute";
 
 const CameraTest = () => {
   const  {
@@ -22,13 +24,118 @@ const CameraTest = () => {
     stopMicTest,
     toggleMicTest,
 
-  } = useMicrophoneTest();  
+  } = useMicrophoneTest(); 
+  const router = useRouter() 
 
   const [isCameraTesting, setIsCameraTesting] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false); // Is AI voice playing?
+  const [audioError, setAudioError] = useState(null); // Any error message to show?
 
+  // audioRef is like a remote control for the audio player
+  const audioRef = useRef("");
+
+  // Get session data (job role, etc.) passed from previous page
+
+
+ useEffect(() => {
+  const sessionData = JSON.parse(localStorage.getItem("interview_session"))
+  console.log(sessionData, "sessionData")
+    if (!sessionData) return;
+
+    const playWelcomeMessage = async () => {
+      const welcomeMessage = `Welcome to your AI interview for the position of ${
+        sessionData.job_role || "your selected role"
+      }. Before we begin, please test your camera and microphone to ensure everything is working properly. Once you're ready, click the I'm Ready to Start button to begin your interview. Good luck!`;
+
+      try {
+        setIsPlayingAudio(true);
+        const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+        const response = await fetch("http://localhost:8080/sessions/tts", {
+          method: "POST", // We're sending data
+          headers: {
+            "Content-Type": "application/json", // Telling server we're sending JSON
+            ...(token ? { "Authorization": `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            text: welcomeMessage,
+            voice: "alloy",
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error! Status: ${response.status}`);
+        }
+        const audioBlob = await response.blob(); // Download audio as a blob (binary data)
+        
+        const audioUrl = URL.createObjectURL(audioBlob); // Create a playable URL from the blob
+        console.log(audioBlob,audioUrl )
+
+        console.log(audioRef.current)
+        if (audioRef.current) {
+          audioRef.current.src = audioUrl;
+        console.log(audioRef.current.src)
+
+          try {
+            await audioRef.current.play(); // Attempt to play
+            // ✅ Success! Audio is now playing
+            console.log("✅ Success! Audio is now playing")
+          } catch (playError) {
+            // ❌ Browser blocked autoplay (this is normal for security)
+            console.log("Autoplay was blocked by browser:", playError);
+            setIsPlayingAudio(false); // Update status
+            
+          }
+
+          // STEP 7: When audio finishes playing
+          audioRef.current.onended = () => {
+            setIsPlayingAudio(false); // Hide "AI Speaking..." indicator
+            URL.revokeObjectURL(audioUrl); // Clean up the audio URL to free memory
+          };
+
+          // STEP 8: If audio has an error
+          audioRef.current.onerror = () => {
+            setIsPlayingAudio(false); // Hide indicator
+            URL.revokeObjectURL(audioUrl); // Clean up
+          };
+        }
+      } catch (error) {
+        // If anything goes wrong (network error, server error, etc.)
+        console.error("Failed to load audio:", error);
+        setAudioError("Could not load audio. Please check your connection.");
+        setIsPlayingAudio(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      playWelcomeMessage();
+    }, 500);
+
+    // STEP 10: Cleanup function (runs when component unmounts or user leaves page)
+    return () => {
+      clearTimeout(timer); // Cancel the timer if user leaves before it triggers
+    };
+  }, []); // Run this effect when sessionData changes
+
+
+
+    const handleStartInterview = () => {
+    const sessionData = JSON.parse(localStorage.getItem("interview_session"))
+    if (sessionData) {
+      // Stop the AI voice if it's still playing
+      if (audioRef.current) {
+        audioRef.current.pause(); // Stop the audio
+      }
+
+      // Navigate to the next page (interview questions page)
+      router.push("/questions-page")
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex flex-col justify-center items-center py-12 px-4">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex flex-col justify-center items-center py-12 px-4">
+         <audio ref={audioRef} preload="auto" />
       <div className="absolute top-20 left-20 w-24 h-24 bg-yellow-200/30 rounded-full"></div>
       <div className="absolute top-40 right-32 w-32 h-32 bg-blue-200/30 rounded-full"></div>
       <div className="absolute top-20 right-1/4 w-16 h-16 bg-blue-300/40 rounded-full"></div>
@@ -163,12 +270,13 @@ const CameraTest = () => {
           </div>
         </div>
         <div className="text-center">
-          <button className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white px-12 py-4 rounded-2xl font-bold text-xl transition-all duration-300 hover:shadow-2xl transform hover:scale-105">
+          <button onClick={() => {handleStartInterview()}} className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white px-12 py-4 rounded-2xl font-bold text-xl transition-all duration-300 hover:shadow-2xl transform hover:scale-105">
             I'm Ready to Start
           </button>
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

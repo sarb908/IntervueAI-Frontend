@@ -1,8 +1,20 @@
 "use client";
 import React from 'react'
-import { Play, ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Banner = () => {
+  const router = useRouter();
+
+  const handleStartPracticing = () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+    if (token) {
+      router.push("/ai-interview");
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
     <section
       id="home"
@@ -33,11 +45,7 @@ const Banner = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <button
-                onClick={() =>
-                  document
-                    .getElementById("features")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
+                onClick={handleStartPracticing}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-10 py-5 rounded-2xl font-semibold text-lg transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-2 flex items-center gap-3 group"
               >
                 Start Practicing
@@ -46,12 +54,19 @@ const Banner = () => {
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </button>
-              <button className="border-2 border-gray-300 hover:border-blue-600 text-gray-700 hover:text-blue-600 px-10 py-5 rounded-2xl font-semibold text-lg transition-all duration-300 hover:shadow-xl flex items-center gap-3 group">
-                <Play
+              <button
+                onClick={() =>
+                  document
+                    .getElementById("features")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="border-2 border-gray-300 hover:border-blue-600 text-gray-700 hover:text-blue-600 px-10 py-5 rounded-2xl font-semibold text-lg transition-all duration-300 hover:shadow-xl flex items-center gap-3 group"
+              >
+                <Sparkles
                   size={20}
                   className="group-hover:scale-110 transition-transform"
                 />
-                Watch Demo
+                Explore Features
               </button>
             </div>
 

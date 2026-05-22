@@ -2,25 +2,19 @@
 import React, { useEffect, useState } from "react";
 import {
   CheckCircle,
-  TrendingUp,
   Award,
-  Star,
   ArrowRight,
   Home,
   RefreshCw,
-  Download,
-  Sparkles,
-  Target,
   Brain,
-  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ProtectedRoute from "../_components/ProtectedRoute";
 
 const FinalReport = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [reportData, setReportData] = useState(null);
-  const [candidateName, setCandidateName] = useState("");
 
 
   useEffect(() => {
@@ -36,12 +30,14 @@ const FinalReport = () => {
       }
      // console.log(sessionid, "sessionid")
       try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
         const response = await fetch(
           `http://localhost:8080/sessions/${sessionid}/final_report`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              ...(token ? { "Authorization": `Bearer ${token}` } : {}),
             },
           }
         );
@@ -109,7 +105,8 @@ const FinalReport = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-12 px-4 relative overflow-hidden">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-12 px-4 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-blue-200/20 to-purple-200/20 rounded-full blur-3xl animate-pulse"></div>
@@ -241,6 +238,7 @@ const FinalReport = () => {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 
