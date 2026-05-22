@@ -10,11 +10,13 @@ import {
   Clock,
 } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import ProtectedRoute from "../_components/ProtectedRoute";
 const AIInterview = () => {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-8 sm:py-12 lg:py-16">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 py-8 sm:py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -202,6 +204,7 @@ const AIInterview = () => {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

@@ -57,7 +57,7 @@ const Footer = () => {
               any interview and land your dream job with confidence.
             </p>
             <div className="flex space-x-4">
-      
+
               <a
                 href="#"
                 className="text-gray-400 hover:text-blue-400 transition-colors duration-200"
@@ -127,7 +127,7 @@ const Footer = () => {
               <Mail size={20} className="text-blue-400" />
               <div>
                 <p className="text-sm text-gray-400">Email</p>
-                <p className="text-white">hello@intervueai.com</p>
+                <p className="text-white">sarbjots908@gmail.com</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -141,7 +141,7 @@ const Footer = () => {
               <MapPin size={20} className="text-blue-400" />
               <div>
                 <p className="text-sm text-gray-400">Location</p>
-                <p className="text-white">San Francisco, CA</p>
+                <p className="text-white">Punjab, India</p>
               </div>
             </div>
           </div>

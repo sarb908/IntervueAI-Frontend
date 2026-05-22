@@ -11,6 +11,7 @@ export default function Home() {
     <div>
     <Banner />
     <Features />
+    <HowItWorks />
     <Pricing />
     <FAQs/>
     <Footer />
