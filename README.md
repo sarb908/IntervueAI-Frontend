@@ -51,8 +51,8 @@ graph TD
     E --> F[Transcribe Audio to Text - STT / Whisper]
     F --> G[Evaluate Answer Node]
     G --> H{Question Counter < 5?}
-    H -- Yes --> C
-    H -- No --> I[Generate Final Report Node]
+    H -->|Yes| C
+    H -->|No| I[Generate Final Report Node]
     I --> J[Compile Performance Metrics]
 ```
 
